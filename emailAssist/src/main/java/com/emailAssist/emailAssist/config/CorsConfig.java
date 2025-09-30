@@ -18,7 +18,8 @@ public class CorsConfig {
 
                 registry.addMapping("/api/generate")
                         .allowedOrigins("https://mail.google.com")
-                        .allowedMethods("POST");
+                        .allowedMethods("POST")
+                        .allowedHeaders("*");
             }
         };
     }
