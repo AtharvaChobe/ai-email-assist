@@ -1,13 +1,21 @@
 package com.emailAssist.emailAssist;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-
 public class EmailRequest {
+
     private String content;
+    private String tone;
+    private String length;
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
 
     public String getContent() {
         return content;
@@ -25,5 +33,4 @@ public class EmailRequest {
         this.tone = tone;
     }
 
-    private String tone;
 }

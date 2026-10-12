@@ -24,7 +24,7 @@ public class EmailRequestService {
         this.webClient = webClientBuilder.build();
     }
 
-    public String generateEmailReply(EmailRequest request){
+    public String generateEmailReply(EmailRequest request) {
         String prompt = buildPrompt(request);
 //        System.out.println("prompt: " + prompt);
 
@@ -46,10 +46,10 @@ public class EmailRequestService {
                     .bodyValue(content)
                     .retrieve()
                     .onStatus(status -> status.isError(), clientResponse ->
-                            clientResponse.bodyToMono(String.class).map(errorBody -> {
+                                    clientResponse.bodyToMono(String.class).map(errorBody -> {
 //                                System.out.println("Error response from Gemini: " + errorBody);
-                                return new RuntimeException("API error: " + errorBody);
-                            })
+                                        return new RuntimeException("API error: " + errorBody);
+                                    })
                     )
                     .bodyToMono(String.class)
                     .block();
@@ -81,11 +81,26 @@ public class EmailRequestService {
 
     private String buildPrompt(EmailRequest request) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Generate a professional email reply for the following email, please dont generate subject line ");
-        if(request.getTone() != null){
-            prompt.append("use a "+request.getTone() + " tone ");
+        prompt.append("Generate an email reply. ");
+        String tone = request.getTone();
+        if ("formal".equalsIgnoreCase(tone)) {
+            prompt.append("Use a formal, professional tone. ");
+        } else if ("casual".equalsIgnoreCase(tone)) {
+            prompt.append("Use a casual, friendly tone. ");
+        } else {
+            prompt.append("Use a professional tone. ");
         }
-        prompt.append("Original email: " + request.getContent());
+
+        String length = request.getLength();
+        if ("short".equalsIgnoreCase(length)) {
+            prompt.append("Keep the reply concise, around 1-3 sentences. ");
+        } else if ("detailed".equalsIgnoreCase(length)) {
+            prompt.append("Write a detailed reply that addresses the important points. ");
+        } else {
+            prompt.append("Use a moderate length. ");
+        }
+        prompt.append("Do not include a subject line or introductory commentary. ");
+        prompt.append("Original email: ").append(request.getContent());
         return prompt.toString();
     }
 }
